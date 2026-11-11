@@ -731,7 +731,7 @@
 
   <script>
     /* ==========================================================================
-       DATASET PEMETAAN FOLDER "image asets/" DENGAN NAMA BARU
+       DATASET PEMETAAN FOLDER "image assets/" DENGAN NAMA BARU
        ========================================================================== */
     const baseItems = [
       { name: "Jambu Air Merah", fileKey: "jambu air merah", fallback: "🍎", isFruit: true },
@@ -759,7 +759,7 @@
       dataset.push({
         id: idCounter++,
         name: `${item.name} Masak`,
-        img: `image asets/${item.fileKey} masak.png`,
+        img: `image assets/${item.fileKey} masak.png`,
         fallback: item.fallback,
         defaultCategory: isBukanBuah ? "bukan_buah" : "buah_masak",
         attributes: { kondisi: "Matang / Segar", status: isBukanBuah ? "Sayur Siap Panen" : "Buah Siap Konsumsi" }
@@ -769,7 +769,7 @@
       dataset.push({
         id: idCounter++,
         name: `${item.name} Masak Rusak`,
-        img: `image asets/${item.fileKey} masak rusak.png`,
+        img: `image assets/${item.fileKey} masak rusak.png`,
         fallback: item.fallback,
         defaultCategory: isBukanBuah ? "bukan_buah" : "buah_masak_rusak",
         attributes: { kondisi: "Matang tapi Rusak / Busuk", status: "Perlu Disortir Buang" }
@@ -779,7 +779,7 @@
       dataset.push({
         id: idCounter++,
         name: `${item.name} Belum Masak`,
-        img: `image asets/${item.fileKey} belum masak.png`,
+        img: `image assets/${item.fileKey} belum masak.png`,
         fallback: item.fallback,
         defaultCategory: isBukanBuah ? "bukan_buah" : "buah_belum_masak",
         attributes: { kondisi: "Mentah / Muda", status: "Belum Matang" }
@@ -789,7 +789,7 @@
       dataset.push({
         id: idCounter++,
         name: `${item.name} Belum Masak Rusak`,
-        img: `image asets/${item.fileKey} belum masak rusak.png`,
+        img: `image assets/${item.fileKey} belum masak rusak.png`,
         fallback: item.fallback,
         defaultCategory: isBukanBuah ? "bukan_buah" : "buah_belum_masak_rusak",
         attributes: { kondisi: "Mentah & Cacat / Rusak", status: "Mentah Cacat" }
@@ -842,25 +842,4 @@
       }
     }
 
-    /* NAVIGATION & PHASES */
-    function switchPhase(phaseNum) {
-      playSound('click');
-      document.querySelectorAll('.phase-panel').forEach(p => p.classList.remove('active'));
-      document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-
-      document.getElementById(`phase${phaseNum}`).classList.add('active');
-      document.getElementById(`btn-phase${phaseNum}`).classList.add('active');
-
-      stopAutoConveyor();
-      if (spawnFase2Interval) clearInterval(spawnFase2Interval);
-
-      if (phaseNum === 1) renderSampleFase1();
-      if (phaseNum === 2) startFase2Conveyor();
-      if (phaseNum === 3) initTestingStage();
-      if (phaseNum !== 2) clearInterval(timerInterval);
-    }
-
-    /* FASE 1: INPUT DATA LATIH */
-    function renderSampleFase1() {
-      if (currentIndex >= dataset.length) currentIndex = 0;
-      const
+    /* NAVIGATION & PHASES
