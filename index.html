@@ -588,7 +588,7 @@
           Sampel Ke- <span id="sample-count-text">1</span> dari <span id="sample-total-text">48</span> | Data Latih Terkumpul: <span id="trained-count-text" style="font-weight:bold; color:#2e7d32;">0</span>
         </div>
 
-        <!-- Keranjang Kategori Drop Zone (4 Kategori + Bukan Buah) -->
+        <!-- Keranjang Kategori Drop Zone -->
         <div class="category-baskets-grid">
           <div class="drop-basket" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event, 'buah_masak')" onclick="clickAssign('buah_masak')">
             <div class="basket-header">🍎 Buah Masak</div>
@@ -731,21 +731,21 @@
 
   <script>
     /* ==========================================================================
-       DATASET PEMETAAN FOLDER "image asets/" DENGAN 4 VARIASI KONDISI
+       DATASET PEMETAAN FOLDER "image asets/" DENGAN NAMA BARU
        ========================================================================== */
     const baseItems = [
-      { name: "Jambu Air", fileKey: "jambu air", fallback: "🍎", isFruit: true },
+      { name: "Jambu Air Merah", fileKey: "jambu air merah", fallback: "🍎", isFruit: true },
       { name: "Jeruk", fileKey: "jeruk", fallback: "🍊", isFruit: true },
       { name: "Nanas", fileKey: "nanas", fallback: "🍍", isFruit: true },
       { name: "Rambutan", fileKey: "rambutan", fallback: "🔴", isFruit: true },
       { name: "Markisa", fileKey: "markisa", fallback: "🟣", isFruit: true },
-      { name: "Apel", fileKey: "apel", fallback: "🍎", isFruit: true },
+      { name: "Apel Merah", fileKey: "apel merah", fallback: "🍎", isFruit: true },
       { name: "Leci", fileKey: "leci", fallback: "🟤", isFruit: true },
       { name: "Manggis", fileKey: "manggis", fallback: "🟣", isFruit: true },
       { name: "Buah Naga", fileKey: "buah naga", fallback: "🌺", isFruit: true },
       { name: "Pepaya", fileKey: "pepaya", fallback: "🍈", isFruit: true },
-      { name: "Tomat", fileKey: "tomat", fallback: "🍅", isFruit: false }, // Masuk kategori sayur / bukan buah
-      { name: "Wortel", fileKey: "wortel", fallback: "🥕", isFruit: false } // Masuk kategori sayur / bukan buah
+      { name: "Tomat", fileKey: "tomat", fallback: "🍅", isFruit: false },
+      { name: "Wortel", fileKey: "wortel", fallback: "🥕", isFruit: false }
     ];
 
     let dataset = [];
@@ -758,9 +758,18 @@
       // 1. Masak
       dataset.push({
         id: idCounter++,
-        name: `\${item.name} Masak`,
-        img: `image asets/${item.fileKey} masak.png`, fallback: item.fallback, defaultCategory: isBukanBuah ? "bukan_buah" : "buah_masak", attributes: { kondisi: "Matang / Segar", status: isBukanBuah ? "Sayur Siap Panen" : "Buah Siap Konsumsi" } });  // 2. Masak Rusak dataset.push({ id: idCounter++, name: `${item.name} Masak Rusak`,
-        img: `image asets/\${item.fileKey} masak rusak.png`,
+        name: `${item.name} Masak`,
+        img: `image asets/${item.fileKey} masak.png`,
+        fallback: item.fallback,
+        defaultCategory: isBukanBuah ? "bukan_buah" : "buah_masak",
+        attributes: { kondisi: "Matang / Segar", status: isBukanBuah ? "Sayur Siap Panen" : "Buah Siap Konsumsi" }
+      });
+
+      // 2. Masak Rusak
+      dataset.push({
+        id: idCounter++,
+        name: `${item.name} Masak Rusak`,
+        img: `image asets/${item.fileKey} masak rusak.png`,
         fallback: item.fallback,
         defaultCategory: isBukanBuah ? "bukan_buah" : "buah_masak_rusak",
         attributes: { kondisi: "Matang tapi Rusak / Busuk", status: "Perlu Disortir Buang" }
@@ -769,8 +778,8 @@
       // 3. Belum Masak
       dataset.push({
         id: idCounter++,
-        name: `\${item.name} Belum Masak`,
-        img: `image asets/\${item.fileKey} belum masak.png`,
+        name: `${item.name} Belum Masak`,
+        img: `image asets/${item.fileKey} belum masak.png`,
         fallback: item.fallback,
         defaultCategory: isBukanBuah ? "bukan_buah" : "buah_belum_masak",
         attributes: { kondisi: "Mentah / Muda", status: "Belum Matang" }
@@ -779,8 +788,8 @@
       // 4. Belum Masak Rusak
       dataset.push({
         id: idCounter++,
-        name: `\${item.name} Belum Masak Rusak`,
-        img: `image asets/\${item.fileKey} belum masak rusak.png`,
+        name: `${item.name} Belum Masak Rusak`,
+        img: `image asets/${item.fileKey} belum masak rusak.png`,
         fallback: item.fallback,
         defaultCategory: isBukanBuah ? "bukan_buah" : "buah_belum_masak_rusak",
         attributes: { kondisi: "Mentah & Cacat / Rusak", status: "Mentah Cacat" }
@@ -839,7 +848,8 @@
       document.querySelectorAll('.phase-panel').forEach(p => p.classList.remove('active'));
       document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
 
-      document.getElementById(`phase${phaseNum}`).classList.add('active'); document.getElementById(`btn-phase${phaseNum}`).classList.add('active');
+      document.getElementById(`phase${phaseNum}`).classList.add('active');
+      document.getElementById(`btn-phase${phaseNum}`).classList.add('active');
 
       stopAutoConveyor();
       if (spawnFase2Interval) clearInterval(spawnFase2Interval);
@@ -853,166 +863,4 @@
     /* FASE 1: INPUT DATA LATIH */
     function renderSampleFase1() {
       if (currentIndex >= dataset.length) currentIndex = 0;
-      const item = dataset[currentIndex];
-
-      const imgEl = document.getElementById('sample-img');
-      const fallbackEl = document.getElementById('sample-fallback');
-      
-      imgEl.style.display = 'block';
-      fallbackEl.style.display = 'none';
-      imgEl.src = item.img;
-      imgEl.onerror = function() {
-        this.style.display = 'none';
-        fallbackEl.style.display = 'block';
-        fallbackEl.innerText = item.fallback;
-      };
-
-      document.getElementById('sample-name').innerText = item.name;
-      document.getElementById('sample-count-text').innerText = currentIndex + 1;
-      document.getElementById('sample-total-text').innerText = dataset.length;
-      document.getElementById('trained-count-text').innerText = userTrainedData.length;
-
-      const attrBox = document.getElementById('sample-attributes');
-      attrBox.innerHTML = `
-        <div>• <strong>Kondisi:</strong> \${item.attributes.kondisi}</div>
-        <div>• <strong>Status:</strong> \${item.attributes.status}</div>
-      `;
-    }
-
-    function nextSample() { playSound('click'); currentIndex = (currentIndex + 1) % dataset.length; renderSampleFase1(); }
-    function prevSample() { playSound('click'); currentIndex = (currentIndex - 1 + dataset.length) % dataset.length; renderSampleFase1(); }
-
-    function handleDragStart(e) { e.dataTransfer.setData('text/plain', 'sample'); }
-    function handleDragOver(e) { e.preventDefault(); e.currentTarget.classList.add('drag-over'); }
-    function handleDragLeave(e) { e.currentTarget.classList.remove('drag-over'); }
-    function handleDrop(e, targetCategory) { e.preventDefault(); e.currentTarget.classList.remove('drag-over'); assignCategory(targetCategory); }
-    function clickAssign(targetCategory) { assignCategory(targetCategory); }
-
-    function assignCategory(chosenCategory) {
-      playSound('success');
-      const item = dataset[currentIndex];
-      userTrainedData.push({ ...item, userAssignedCategory: chosenCategory });
-
-      const basket = document.getElementById(`basket-fase1-\${chosenCategory}`);
-      if (basket) {
-        const badge = document.createElement('div');
-        badge.className = 'item-badge';
-        badge.innerHTML = `<img src="\${item.img}" onerror="this.src='https://via.placeholder.com/36?text=${item.fallback}'">`; badge.title = `${item.name} (${chosenCategory})`; basket.appendChild(badge); }  currentIndex = (currentIndex + 1) \% dataset.length; renderSampleFase1(); }  function skipToPhase2() { if (userTrainedData.length === 0) { alert("Berikan setidaknya beberapa contoh data latih terlebih dahulu agar AI bisa belajar."); return; } switchPhase(2); }  /* FASE 2: BAN BERJALAN & TIMER 30 DETIK */ function startFase2Conveyor() { currentCategoryIndex = 0; updateTargetCategoryDisplay(); spawnMovingItemsFase2(); resetTimer(); }  function updateTargetCategoryDisplay() { const catKey = categoriesList[currentCategoryIndex]; document.getElementById('target-category-name').innerText = categoryNames[catKey]; }  function resetTimer() { clearInterval(timerInterval); timerValue = 30; document.getElementById('timer-text').innerText = timerValue; document.getElementById('timer-bar').style.width = '100\%';  timerInterval = setInterval(() => { timerValue--; document.getElementById('timer-text').innerText = timerValue; document.getElementById('timer-bar').style.width = `${(timerValue / 30) * 100}%`;
-
-        if (timerValue <= 0) {
-          currentCategoryIndex = (currentCategoryIndex + 1) % categoriesList.length;
-          updateTargetCategoryDisplay();
-          timerValue = 30;
-        }
-      }, 1000);
-    }
-
-    function spawnMovingItemsFase2() {
-      const zone = document.getElementById('conveyor-left-zone');
-      if (spawnFase2Interval) clearInterval(spawnFase2Interval);
-      
-      spawnFase2Interval = setInterval(() => {
-        if (!document.getElementById('phase2').classList.contains('active')) return;
-
-        const randomItem = dataset[Math.floor(Math.random() * dataset.length)];
-        const el = document.createElement('div');
-        el.className = 'moving-item';
-        el.innerHTML = `
-          <img src="${randomItem.img}" onerror="this.src='https://via.placeholder.com/45?text=${randomItem.fallback}'">
-          <div style="font-size:0.5rem; font-weight:bold; text-align:center; overflow:hidden; white-space:nowrap; width:100%;">\${randomItem.name}</div>
-        `;
-        
-        let pos = -80;
-        el.style.left = pos + 'px';
-        zone.appendChild(el);
-
-        const moveAnim = setInterval(() => {
-          pos += 2.5;
-          el.style.left = pos + 'px';
-
-          if (pos > zone.clientWidth - 40) {
-            clearInterval(moveAnim);
-            el.remove();
-          }
-        }, 30);
-
-        el.onclick = () => {
-          const activeCategory = categoriesList[currentCategoryIndex];
-          userTrainedData.push({ ...randomItem, userAssignedCategory: activeCategory });
-
-          const rightBasket = document.getElementById(`basket-fase2-\${activeCategory}`);
-          if (rightBasket) {
-            const badge = document.createElement('div');
-            badge.className = 'item-badge';
-            badge.innerHTML = `<img src="${randomItem.img}" onerror="this.src='https://via.placeholder.com/36?text=${randomItem.fallback}'">`;
-            rightBasket.appendChild(badge);
-          }
-
-          playSound('success');
-          clearInterval(moveAnim);
-          el.remove();
-        };
-      }, 1600);
-    }
-
-    /* FASE 3: UJI HASIL MESIN & KOREKSI RALAT */
-    function initTestingStage() {
-      const screen = document.getElementById('machine-screen-test');
-      screen.classList.remove('error-mode');
-      screen.innerText = "TEKAN 'JALANKAN BAN PENGUJIAN'";
-      document.getElementById('active-correction-area').innerHTML = '';
-    }
-
-    function toggleAutoConveyor() {
-      playSound('click');
-      if (isAutoRunning) {
-        stopAutoConveyor();
-      } else {
-        startAutoConveyor();
-      }
-    }
-
-    function startAutoConveyor() {
-      isAutoRunning = true;
-      const btn = document.getElementById('btn-toggle-auto');
-      if (btn) {
-        btn.innerText = "⏸️ Hentikan Pengujian";
-        btn.style.backgroundColor = "#d32f2f";
-      }
-
-      document.getElementById('machine-screen-test').innerText = "MENJALANKAN UJI AI...";
-      spawnTestItemAnim();
-      clearInterval(autoInterval);
-      autoInterval = setInterval(spawnTestItemAnim, 2200);
-    }
-
-    function stopAutoConveyor() {
-      isAutoRunning = false;
-      clearInterval(autoInterval);
-      autoInterval = null;
-
-      const btn = document.getElementById('btn-toggle-auto');
-      if (btn) {
-        btn.innerText = "▶️ Jalankan Ban Pengujian";
-        btn.style.backgroundColor = "var(--secondary-color)";
-      }
-
-      const screen = document.getElementById('machine-screen-test');
-      if (screen) {
-        screen.classList.remove('error-mode');
-        screen.innerText = "PENGUJIAN DIHENTIKAN";
-      }
-      document.getElementById('active-correction-area').innerHTML = '';
-    }
-
-    function spawnTestItemAnim() {
-      if (!isAutoRunning || !document.getElementById('phase3').classList.contains('active')) return;
-
-      const container = document.getElementById('phase3-moving-container');
-      const testItem = dataset[Math.floor(Math.random() * dataset.length)];
-
-      const el = document.createElement('div');
-      el.className = 'moving-item';
-      el.innerHTML = `
-        <img src="${testItem.img}" onerror="this.src='https://via.placeholder.com/45?text=${testItem.fallback}'">
-        <div style="font-size
+      const
